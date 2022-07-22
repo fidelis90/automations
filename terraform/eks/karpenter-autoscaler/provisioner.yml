@@ -1,0 +1,44 @@
+apiVersion: karpenter.sh/v1alpha5
+kind: Provisioner
+metadata:
+  name: default
+spec:
+  # Labels are arbitrary key-values that are applied to all nodes
+  labels:
+    team: devops-team
+
+  # Requirements that constrain the parameters of provisioned nodes.
+  # These requirements are combined with pod.spec.affinity.nodeAffinity rules.
+  # Operators { In, NotIn } are supported to enable including or excluding values
+  requirements:
+    # - key: "node.kubernetes.io/instance-type"
+    #   operator: In
+    #   values: ["m5.large", "m5.2xlarge"]
+    - key: "topology.kubernetes.io/zone"
+      operator: In
+      values: ["us-west-2a", "us-west-2b", "us-west-2c"]
+    # - key: "kubernetes.io/arch"
+    #   operator: In
+    #   values: ["arm64", "amd64"]
+    - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
+      operator: In
+      values: ["on-demand"]
+
+  # Resource limits constrain the total size of the cluster.
+  # Limits prevent Karpenter from creating new instances once the limit is exceeded.
+  limits:
+    resources:
+      cpu: "1000"
+      memory: 1000Gi
+
+  # These fields vary per cloud provider, see your cloud provider specific documentation
+  # remember to export variables in local 
+  provider:
+    subnetSelector:
+      karpenter.sh/discovery: dev-eks-cluster 
+    securityGroupSelector:
+      karpenter.sh/discovery: dev-eks-cluster
+    tags:
+      team: devops-team
+    instanceProfile: KarpenterNodeInstanceProfile-dev-eks-cluster
+  ttlSecondsAfterEmpty: 30 
