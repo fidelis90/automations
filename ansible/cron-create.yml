@@ -1,0 +1,10 @@
+---
+- name: Create Cron Entry 
+  hosts: all
+  gather_facts: no
+  become: true
+  vars:
+    ansible_ssh_private_key_file: /Users/holyswagger/.ssh/Test.pem
+    ansible_user: ec2-user
+  roles:
+  - roles/cron

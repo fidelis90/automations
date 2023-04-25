@@ -1,0 +1,7 @@
+plugin: amazon.aws.aws_ec2
+aws_profile: fidelis-holyswagger
+regions:
+- us-east-1
+filters:
+  tag:ansible:
+  - 'slave'
