@@ -14,3 +14,4 @@ git checkout -b <new-branch> <existing-branch>
   - git commit -m "added git-cmds file"
 3. push the changes to the remote repo
   - git push -u origin temi
+# some changes from remote
