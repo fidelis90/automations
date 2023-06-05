@@ -1,0 +1,15 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "dev" do |dev|
+    dev.vm.box = "spox/ubuntu-arm"
+    dev.vm.box_version = "1.0.0"
+    dev.vm.network "private_network", ip: "192.168.12.250"
+  end
+
+  config.vm.provider "vmware_desktop" do |vmware|
+    vmware.gui = true
+    vmware.allowlist_verified = true
+   end
+end
