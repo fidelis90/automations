@@ -105,7 +105,39 @@ The job definition must contain the helm test hook annotation: helm.sh/hook: tes
 
 > NOTE: A test is a Helm hook, so annotations like helm.sh/hook-weight and helm.sh/hook-delete-policy may be used with test resources.
 
+## Helm flow controls
 
+this gives ability to control the flow of a template's generation. 
+
+- if/else for creating conditional blocks
+- with to specify a scope
+- range, which provides a "for each"-style loop
+
+### if/else 
+
+```
+{{ if PIPELINE }}
+  # Do something
+{{ else if OTHER PIPELINE }}
+  # Do something else
+{{ else }}
+  # Default case
+{{ end }}
+```
+>> EXAMPLE 
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  myvalue: "Hello World"
+  drink: {{ .Values.favorite.drink | default "tea" | quote }}
+  food: {{ .Values.favorite.food | upper | quote }}
+  {{ if eq .Values.favorite.drink "coffee" }}
+  mug: "true"
+  {{ end }}
+```
 
 
 
