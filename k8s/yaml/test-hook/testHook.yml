@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hooks-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hooks-demo
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: hooks-demo
+    spec:
+      containers:
+        - name: hooks-demo
+          image: nginx:1.25.0
+          ports:
+              - containerPort: 80
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+          lifecycle:
+             postStart:
+              exec:
+                  command: ["/bin/sh", "-c", "date > /container-started.txt"]
+             preStop:
+              exec:
+                  command: ["/bin/sh", "-c", "echo 'fidelis just stopped container' && /usr/sbin/nginx -s quit"]
+      terminationGracePeriodSeconds: 60
