@@ -89,4 +89,23 @@ helm create demo
 
 2. add the hook to the templates directory 
 
-3. 
+3. Run your helm install 
+
+## Chart tests 
+
+A chart contains a number of Kubernetes resources and components that work together. As a chart author, you may want to write some tests that validate that your chart works as expected when it is installed.
+The job definition must contain the helm test hook annotation: helm.sh/hook: test
+
+### Steps to Run a Test Suite on a Release
+
+1. helm create demo 
+2. find the test script in templates/tests/test-connection.yaml
+3. helm install to create a release 
+4. helm test $RELEASE_NAME 
+
+> NOTE: A test is a Helm hook, so annotations like helm.sh/hook-weight and helm.sh/hook-delete-policy may be used with test resources.
+
+
+
+
+
