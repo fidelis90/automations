@@ -6,11 +6,14 @@ metadata:
     {{- include "demo.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   containers:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "demo.fullname" . }}:{{ .Values.service.port }}']
+      {{- with (index .Values.ingress.hosts 0) }}
+      args: ['http://{{ .host }}']
+      # args: ['{{ include "demo.fullname" . }}:{{ .Values.service.port }}']
+      {{- end }}
   restartPolicy: Never
