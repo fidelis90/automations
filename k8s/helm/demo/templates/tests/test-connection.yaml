@@ -12,8 +12,6 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      {{- with (index .Values.ingress.hosts 0) }}
-      args: ['http://{{ .host }}']
-      # args: ['{{ include "demo.fullname" . }}:{{ .Values.service.port }}']
-      {{- end }}
+      # args: ['http://{{ .host }}']
+      args: ['{{ include "demo.fullname" . }}.{{ .Values.namespace }}.svc.cluster.local:{{ .Values.service.port }}']
   restartPolicy: Never
