@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+    // environment {
+    //   ansible_key=credentials('Jenkins-private-key')
+    // }
+    stages{
+      stage('SCM Ccheckout') {
+        steps{
+          checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'b8c9eced-d147-4a5d-a3f6-4fe05761d5cf', url: 'git@github.com:Temmy1997/temi-library.git']])
+        }
+      }
+      stage("Catch the variable"){
+        steps {
+          withCredentials([sshUserPrivateKey(credentialsId: 'Jenkins-private-key', keyFileVariable: 'SSH_KEY')]) {
+            sh '''#!/bin/bash
+               export ANSIBLE_SSH_ARGS="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+               source /var/lib/jenkins/workspace/jenkins_env/bin/activate
+               ansible-playbook -i ansible/aws_ec2.yml -e "ansible_ssh_private_key_file=$SSH_KEY" ansible/deploy_apache.yml 
+            '''
+          }
+        }
+      }
+    }
+}
